@@ -1,0 +1,7 @@
+<resources>
+    <style name="AppTheme" parent="Base.AppTheme" >
+        <item name="colorPrimary">@color/blue300</item>
+        <item name="colorPrimaryDark">@color/blue400</item>
+        <item name="colorAccent">@color/yellow400</item>
+    </style>
+</resources>

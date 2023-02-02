@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "100333223665",
+    "project_id": "addeep",
+    "storage_bucket": "addeep.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:100333223665:android:5e8839cdfebffbe3dcf350",
+        "android_client_info": {
+          "package_name": "net.itanchi.addeep.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "100333223665-asnvts8nv4lblnbf18s68p677p46j4du.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.itanchi.addeep.android",
+            "certificate_hash": "47c3565fd497eb6efa9296a27590b1ac18f54d84"
+          }
+        },
+        {
+          "client_id": "100333223665-fnbcilbs4apf6sm2itdkg3f8aqs9ii0c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBOgcgw5Jbv5h_oli0LWVp6mQr6En6gW0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "100333223665-fnbcilbs4apf6sm2itdkg3f8aqs9ii0c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

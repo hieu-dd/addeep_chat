@@ -1,0 +1,8 @@
+services:
+  properties:
+    - id: ADDEEP
+      baseUrl: ${ADDEEP_BASE_URL}
+    - id: GIPHY
+      baseUrl: ${GIPHY_BASE_URL}
+      configs:
+        apiKey: ${GIPHY_API_KEY}

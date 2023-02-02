@@ -1,0 +1,958 @@
+swagger: "2.0"
+info:
+  description: "Addeep API"
+  version: "1.0.0"
+  title: "Swagger Addeep"
+  contact:
+    email: "anhdt1994@gmail.com"
+tags:
+- name: "user"
+  description: "Everything about your User"
+- name: "conversation"
+  description: "Everything about conversation"
+- name: "event"
+  description: "Everything about event"
+- name: "media"
+  description: "Everything about media"
+schemes:
+- "https"
+- "http"
+paths:
+  /api/v1/users:
+    get:
+      tags:
+      - "user"
+      summary: "Get user info"
+      description: "Get user info"
+      operationId: "getUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: "query"
+          name: "addeepId"
+          type: string
+          description: "addeep user id"
+          required: false
+        - in: "query"
+          name: "phone"
+          type: string
+          description: "user phone"
+          required: false
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 400312
+              message:
+                type: string
+                example: success
+              data:
+                $ref: "#/definitions/User"
+    put:
+      tags:
+      - "user"
+      summary: "Update user"
+      description: "Update user info"
+      operationId: "updateUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: header
+        name: Authorization
+        type: string
+        required: true
+      - in: "body"
+        name: "body"
+        description: "user data"
+        required: true
+        schema:
+          type: object
+          properties: 
+            name: 
+              type: "string"
+            gender: 
+              type: "string"
+            email: 
+              type: "string"
+            dob: 
+              type: "string"
+              example: "1994-08-01"
+            addeepId:
+              type: "string"
+              description: unique id for addeep user
+              pattern: ^[a-zA-Z0-9._-]{4,12}$
+              example: Nick.Vujicic
+            allowToSearchByAddeepId:
+              type: boolean
+              description: allow another user to search by addeepId or not
+              example: false
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 400312
+              message:
+                type: string
+                example: success
+              data:
+                $ref: "#/definitions/User"
+                
+  /api/v1/users/push-token:
+    put:
+      tags:
+      - "user"
+      summary: "Push device token"
+      description: "Push device token"
+      operationId: "pushDeviceToken"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: header
+        name: Authorization
+        type: string
+        required: true
+      - in: "body"
+        name: "body"
+        description: "device token"
+        required: true
+        schema:
+          required:
+            - deviceToken
+          type: object
+          properties: 
+            deviceToken: 
+              type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 400312
+              message:
+                type: string
+                example: success
+  /api/v1/users/avatar:
+    post:
+      tags:
+      - "user"
+      summary: "Upload user avatar"
+      description: "Upload user avatar"
+      operationId: "uploadUserAvatar"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+       - in: header
+         name: Authorization
+         type: string
+         required: true
+       - in: formData
+         name: attachments
+         type: file
+         description: The file to upload.
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 0
+              message:
+                type: string
+                example: success
+              data:
+                type: string
+    get:
+      tags:
+      - "user"
+      summary: "Download user avatar"
+      description: "Download user avatar"
+      operationId: "downloadUserAvatar"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/octet-stream"
+      parameters:
+       - in: header
+         name: Authorization
+         type: string
+         required: true
+       - name: "userId"
+         in: "query"
+         type: integer
+         format: int64
+         description: "user id"
+         required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "string"
+            format: "binary"
+  
+  /api/v1/users/contacts:
+    post:
+      tags:
+      - "user"
+      summary: "Sync user contacts"
+      description: "Sync user contacts"
+      operationId: "syncUserContact"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+       - in: header
+         name: Authorization
+         type: string
+         required: true
+       - in: "body"
+         name: "body"
+         description: "contact data"
+         required: true
+         schema:
+          required:
+            - contacts
+          type: object
+          properties: 
+            contacts: 
+              type: "array"
+              items:
+                type: "object"
+                required: 
+                  - "name"
+                  - "emails"
+                  - "phones"
+                properties: 
+                  name: 
+                    type: "string"
+                  emails: 
+                    type: "array"
+                    items: 
+                      type: "string"
+                  phones: 
+                    type: "array"
+                    items: 
+                      type: "string"
+                  
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 0
+              message:
+                type: string
+                example: success
+              data:
+                $ref: "#/definitions/User"
+
+  /api/v1/users/add-contact:
+    post:
+      tags:
+        - "user"
+      summary: "Add contact"
+      description: "Add contact"
+      operationId: "addContact"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: "body"
+          name: "body"
+          description: "contact data"
+          required: true
+          schema:
+            required:
+              - userId
+            type: object
+            properties:
+              userId:
+                type: integer
+                format: int64
+
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 0
+              message:
+                type: string
+                example: success
+              data:
+                type: integer
+                format: int64
+                description: contact user id
+
+  /api/v1/events:
+    get:
+      tags:
+      - "event"
+      summary: "Get events"
+      description: "Get events"
+      operationId: "getEvent"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: header
+        name: Authorization
+        type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 0
+              message:
+                type: string
+                example: success
+              data:
+                $ref: "#/definitions/Event"
+  /api/v1/conversations:
+    post:
+      tags:
+      - "conversation"
+      summary: "create conversation"
+      description: "Create Conversation"
+      operationId: "createConversation"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+       - in: header
+         name: Authorization
+         type: string
+         required: true
+       - in: "body"
+         name: "body"
+         description: "conversation data"
+         required: true
+         schema:
+          type: object
+          required: 
+            - "title"
+            - "type"
+            - "participantIds"
+          properties: 
+            title: 
+              type: "string"
+            type: 
+              type: "string"
+              enum: ["Single", "Group"]
+            participantIds: 
+              type: "array"
+              items: 
+                type: "integer"
+                format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 0
+              message:
+                type: string
+                example: success
+              data:
+                $ref: "#/definitions/Conversation"
+    get:
+      tags:
+      - "conversation"
+      summary: "get conversation list"
+      description: "get Conversation list"
+      operationId: "getConversationList"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: header
+        name: Authorization
+        type: string
+        required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+              - "code"
+              - "message"
+            properties:
+              code:
+                type: "integer"
+                format: int32
+                example: 0
+              message:
+                type: string
+                example: success
+              data:
+                type: array
+                items:
+                  $ref: "#/definitions/Conversation"
+  
+  /api/v1/conversations/{conversationId}/messages:
+    post:
+      tags:
+      - "conversation"
+      summary: "send message"
+      description: "send message"
+      operationId: "sendMessage"
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+       - in: header
+         name: Authorization
+         type: string
+         required: true
+       - in: "path"
+         type: "integer"
+         format: "int64"
+         name: "conversationId"
+         description: "conversation id"
+         required: true
+       - in: "formData"
+         name: "message"
+         type: "string"
+         description: "message"
+       - in: "formData"
+         name: "type"
+         type: string
+         description: message type
+       - in: formData
+         name: attachments
+         type: file
+         description: The file to upload.
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 0
+              message:
+                type: string
+                example: success
+              data:
+                type: integer
+                format: int64
+  
+    get:
+      tags:
+      - "conversation"
+      summary: "get messages"
+      description: "get messages"
+      operationId: "getMessages"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+       - in: header
+         name: Authorization
+         type: string
+         required: true
+       - in: "path"
+         type: "integer"
+         format: "int64"
+         name: "conversationId"
+         description: "conversation id"
+         required: true
+       - in: "query"
+         name: "messageAfter"
+         type: "integer"
+         format: "inte64"
+         description: "after message id"
+       - in: "query"
+         name: "messageBefore"
+         type: "integer"
+         format: "inte64"
+         description: "before message id"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 0
+              message:
+                type: string
+                example: success
+              data:
+                $ref: "#/definitions/Message"
+  
+  /api/v1/conversations/{conversationId}:
+    get:
+      tags:
+      - "conversation"
+      summary: "get conversation detail"
+      description: "get conversation detail"
+      operationId: "getConversationDetail"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+       - in: header
+         name: Authorization
+         type: string
+         required: true
+       - in: "path"
+         type: "integer"
+         format: "int64"
+         name: "conversationId"
+         description: "conversation id"
+         required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 0
+              message:
+                type: string
+                example: success
+              data:
+                type: integer
+                format: "#/definitions/Conversation"
+  /api/v1/conversations/{conversationId}/messages/{messageId}/{contentName}:
+    get:
+      tags:
+      - "conversation"
+      summary: "download message attachments"
+      description: "download message attachments"
+      operationId: "downloadMessageAttachments"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/octet-stream"
+      parameters:
+       - in: header
+         name: Authorization
+         type: string
+         required: true
+       - in: "path"
+         type: "integer"
+         format: "int64"
+         name: "conversationId"
+         description: "conversation id"
+         required: true
+       - in: "path"
+         type: "integer"
+         format: "int64"
+         name: "messageId"
+         description: "message id"
+         required: true
+       - in: "path"
+         type: "integer"
+         format: "int64"
+         name: "contentName"
+         description: "attachment file name"
+         required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "string"
+            format: "binary"
+  /api/v1/media/gifs:
+    get:
+      tags:
+        - "media"
+      summary: "Get gifs"
+      description: "Get gifs"
+      operationId: "getGifs"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: "query"
+          name: "page"
+          type: integer
+          description: "page number"
+          required: false
+        - in: "query"
+          name: "pageSize"
+          type: integer
+          description: "size of page"
+          required: false
+        - in: "query"
+          name: "filter"
+          type: string
+          description: "filter gif by name"
+          required: false
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            required:
+              - code
+              - message
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 400312
+              message:
+                type: string
+                example: success
+              data:
+                $ref: "#/definitions/Gif"
+  /api/v1/media/gifs/{gifName}:
+    get:
+      tags:
+        - "media"
+      summary: "Download gif"
+      description: "Download gif"
+      operationId: "downloadGif"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/octet-stream"
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          required: true
+        - in: "path"
+          type: "string"
+          name: "gifName"
+          description: "name of the gif"
+          required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "string"
+            format: "binary"
+
+            
+
+definitions:
+  User:
+    type: "object"
+    required: 
+    - "id"
+    - "name"
+    - "phone"
+    - "gender"
+    - "pointInfo"
+    - "allowToSearchByAddeepId"
+    properties: 
+      id: 
+        type: "integer"
+        format: "int64"
+      addeepId:
+        type: "string"
+        description: unique id for addeep user
+        pattern: ^[a-zA-Z0-9._-]{4,12}$
+        example: Nick.Vujicic
+      email: 
+        type: "string"
+      name: 
+        type: "string"
+      phone: 
+        type: "string"
+      gender: 
+        type: "string"
+      dob: 
+        type: "string"
+      avatar: 
+        type: "string"
+      pointInfo: 
+        required: 
+          - "receivedPoint"
+          - "balance"
+        properties: 
+          receivedPoint: 
+            type: "integer"
+            format: "int64"
+          balance: 
+            type: "integer"
+            format: "int64"
+        type: "object"
+      preferences: 
+        properties: 
+          collectAndUsePersonalInfo: 
+            type: "boolean"
+        type: "object"
+      displayName: 
+        type: "string"
+      allowToSearchByAddeepId:
+        type: boolean
+        description: allow to search by addeepId or not
+        example: true
+      isFriend:
+        type: boolean
+        description: is friend with current user or not
+        example: false
+  
+  Event:
+    type: "object"
+    required: 
+    - "id"
+    - "name"
+    - "description"
+    - "imageUrl"
+    - "url"
+    - "actions"
+    - "messageConditions"
+    - "startedAt"
+    - "applyOn"
+    - "status"
+    - "createdAt"
+    - "updatedAt"
+    properties: 
+      id: 
+        type: "integer"
+        format: "int64"
+      name: 
+        type: "string"
+      description: 
+        type: "string"
+      imageUrl: 
+        type: "string"
+      url: 
+        type: "string"
+      actions: 
+        type: "array"
+        items: 
+          type: "object"
+          properties: 
+            type: 
+              type: "string"
+            points:
+              type: "integer"
+              format: "int64"
+      messageConditions: 
+        type: "array"
+        items: 
+          type: "object"
+          properties:
+            stickerId:
+              type: "integer"
+              format: "int64"
+      startedAt: 
+        type: "string"
+        example: "2021-12-22T08:35:08Z"
+      applyOn: 
+        type: "string"
+      status: 
+        type: "string"
+        enum: ["Active", "Inactive"]
+      createdAt: 
+        type: "string"
+        example: "2021-12-22T08:35:08Z"
+      updatedAt: 
+        type: "string"
+        example: "2021-12-22T08:35:08Z"
+  Conversation:
+    type: "object"
+    required: 
+    - "id"
+    - "title"
+    - "type"
+    - "participants"
+    - "messages"
+    - "creator"
+    - "createdAt"
+    - "updatedAt"
+    properties: 
+      id: 
+        type: "integer"
+        format: "int64"
+      title: 
+        type: "string"
+      type: 
+        type: "string"
+      participants: 
+        type: "array"
+        items: 
+          $ref: "#/definitions/User"
+      messages: 
+        type: "array"
+        items: 
+          $ref: "#/definitions/Message"
+      creator: 
+        $ref: "#/definitions/User"
+      createdAt: 
+        type: "string"
+        example: "2021-12-22T08:35:08Z"
+      updatedAt: 
+        type: "string"
+        example: "2021-12-22T08:35:08Z"
+  Message:
+    type: "object"
+    required: 
+      - "id"
+      - "message"
+      - "sender"
+      - "type"
+      - "createdAt"
+    properties: 
+      id: 
+        type: "integer"
+        format: "int64"
+      message: 
+        type: "string"
+      attachments:
+        type: array
+        items:
+          $ref: "#/definitions/Attachment"
+      sender: 
+        $ref: "#/definitions/User"
+      type: 
+        type: "string"
+        enum: ["PlainText", "Sticker", "Photo", "Document", "Gif"]
+      createdAt: 
+        type: "string"
+        example: "2021-12-22T08:35:08Z"
+  Attachment:
+    type: "object"
+    required:
+      - "id"
+      - "type"
+      - "originalName"
+      - "name"
+      - "size"
+      - "md5"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+      type:
+        type: "string"
+        description: "Content type of the attachment"
+        example: "video/mp4"
+      originalName:
+        type: "string"
+        example: "01.png"
+      name:
+        type: "string"
+        example: "1642266515_1_01.png"
+      size:
+        type: "integer"
+        format: "int64"
+        example: 3745
+      md5:
+        type: "string"
+        example: "8849491cc98cecb4a915dbb773edd253"
+  Gif:
+    type: "object"
+    required:
+      - "src"
+      - "dataSource"
+    properties:
+      url:
+        type: "string"
+        description: "url of the gif"
+      dataSource:
+        type: "string"
+        description: "where the gif comes from"
+        example: "giphy"

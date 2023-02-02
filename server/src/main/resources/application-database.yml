@@ -1,0 +1,20 @@
+spring:
+  r2dbc:
+    url: r2dbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslMode=DISABLED
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    pool:
+      initial-size: 10
+      max-size: 20
+      max-create-connection-time: PT3S
+      max-acquire-time: PT6S
+      max-idle-time: PT60S
+      max-life-time: PT120S
+      validation-query: SELECT 1
+  liquibase:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    user: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    changeLog: "classpath:/db/changelog/main-changelog.yml"
+    database-change-log-table: database_changelogs
+    database-change-log-lock-table: database_changelogs_lock

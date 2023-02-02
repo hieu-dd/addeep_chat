@@ -1,0 +1,8 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: Addeep
+  profiles:
+    include: database, cache, tracing, rsocket, messaging, gcp
